@@ -74,22 +74,26 @@ public class PedidoController {
     }
 
     @PutMapping
-    public ResponseEntity<Object> update(@RequestBody PedidoDto dto)
-    {
-        var pedido = new Pedido();
-        BeanUtils.copyProperties(dto, pedido);
+    public ResponseEntity<Object> update(@RequestBody PedidoDto dto) {
+        Optional<Pedido> pedidoOptional = service.findById(dto.getId());
 
-        Optional<Pedido> pedidoOptional = service.findById(pedido.getId());
-
-        if(!pedidoOptional.isPresent()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    "Pedido não encontrado"
-            );
+        if (!pedidoOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Pedido não encontrado");
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(
-                service.save(pedido)
-        );
+        Pedido pedido = pedidoOptional.get();
+
+        Optional<Cliente> clienteOptional = clienteRepo.findById(dto.getClienteId());
+        if (!clienteOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cliente não encontrado");
+        }
+
+        pedido.setDescricao(dto.getDescricao());
+        pedido.setValor(dto.getValor());
+        pedido.setStatus(dto.getStatus());
+        pedido.setCliente(clienteOptional.get());
+
+        return ResponseEntity.status(HttpStatus.OK).body(service.save(pedido));
     }
 
     @DeleteMapping("/{id}")

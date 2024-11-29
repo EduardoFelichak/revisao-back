@@ -33,7 +33,7 @@ public class ClienteService {
     }
 
     public List<Cliente> findAll() {
-        return repo.findAll();
+        return repo.findAllWithPedidos();
     }
 
     public Optional<Cliente> findById(UUID id) {
