@@ -67,6 +67,12 @@ public class ClienteController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cliente não encontrado.");
         }
 
+        Optional<Cliente> clienteComCpf = service.findByCpf(cliente.getCpf());
+
+        if (!clienteComCpf.isEmpty() && !(clienteComCpf.get().getId().equals(cliente.getId())))
+            return ResponseEntity
+                    .badRequest().body("Já existe um cliente com este CPF");
+
         Cliente clienteExistente = clienteOptional.get();
 
         BeanUtils.copyProperties(cliente, clienteExistente, "id", "pedidos");
