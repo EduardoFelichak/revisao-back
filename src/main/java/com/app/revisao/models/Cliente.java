@@ -31,7 +31,7 @@ public class Cliente {
 
     private String endereco;
 
-    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<Pedido> pedidos = new ArrayList<>();
 }
